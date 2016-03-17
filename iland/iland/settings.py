@@ -26,7 +26,7 @@ SECRET_KEY = '8xoxj#a4k@47$++myz=8159ii=u37i3qn%ioig86=g0-@7f!+='
 DEBUG = True
 
 ALLOWED_HOSTS = ["127.0.0.1"]
-
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Application definition
 
@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'post',
-    'ckeditor',
+    # 'ckeditor',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -121,6 +121,3 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
-
-MEDIA_URL = 'media/'
-CKEDITOR_IPLOAD_PATH = "uploads/"

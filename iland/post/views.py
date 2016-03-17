@@ -4,9 +4,9 @@ from django.template import loader,Context
 from django.http import HttpResponse,HttpResponseRedirect
 from post.models import Article
 
-from .models import Article
+from .models import Article,Tag
 # Create your views here.
-def blog_list(request):
+def post_list(request):
     queryset = Article.objects.all()
     context = {
         "title" : "All Post",
@@ -14,7 +14,7 @@ def blog_list(request):
         }
     return render(request,"base.html",context)
     
-def blog_detail(request, id=None):
+def post_detail(request, id=None):
     queryset = Article.objects.all()
     context = {
         "title" : "All Post",
@@ -22,7 +22,7 @@ def blog_detail(request, id=None):
         }
     return render(request,"base.html",context)
     
-def blog_create(request):
+def post_create(request):
     queryset = Article.objects.all()
     context = {
         "title" : "All Post",
@@ -30,7 +30,7 @@ def blog_create(request):
         }
     return render(request,"base.html",context)
     
-def blog_update(request,id=None):
+def post_update(request,id=None):
     queryset = Article.objects.all()
     context = {
         "title" : "All Post",
@@ -38,7 +38,7 @@ def blog_update(request,id=None):
         }
     return render(request,"base.html",context)
     
-def blog_delete(request,id= None):
+def post_delete(request,id= None):
     queryset = Article.objects.all()
     context = {
         "title" : "All Post",

@@ -7,5 +7,10 @@ class ArticleAdmin(admin.ModelAdmin):
     class Meta:
         model = Article
 
-admin.site.register(Article,Tag)
-#admin.site.register(ArticleAdmin)
+class TagAdmin(admin.ModelAdmin):
+    list_display = ['tag_name',]
+    class Meta:
+        model = Tag
+
+admin.site.register(Article,ArticleAdmin)
+admin.site.register(Tag,TagAdmin)
