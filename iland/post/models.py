@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 from django.template.defaultfilters import slugify
 from django.db import models
 from django.conf import settings
-# from ckeditor.fields import RichTextField
+from ckeditor.fields import RichTextField
 
 #Create your models here.
 
@@ -29,6 +29,7 @@ class Article(models.Model):
     title = models.CharField(max_length = 150,blank = False)
     tag = models.ManyToManyField(Tag)
     body = models.TextField()
+    # body = models.RichTextField()
     draft = models.BooleanField(default=True)
     publish = models.DateField(auto_now=False, auto_now_add=False)
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)

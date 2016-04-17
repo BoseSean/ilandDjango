@@ -16,5 +16,5 @@ urlpatterns = [
     url(r'^(?P<id>\d+)/edit/$',post_update, name="edit"),
     url(r'^create/$',post_create),
     url(r'^(?P<id>\d+)/delete/$',post_delete),
-    url(r'^(?P<department_slug>[\w-]+)/$', post_list_department, name='department'),
+    url(r'^(?P<department_name>[\w-]+)/$', post_list_department, name='department'),
 ]

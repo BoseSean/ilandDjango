@@ -1,5 +1,6 @@
 {% load staticfiles %}
 <!--DOCTYPE html -->
+
 <html>
 <head>
 <title>{% block head_title %}|{% endblock head_title %}A GGing Website</title>
@@ -9,34 +10,36 @@
 </head>
 
 {% block content %}
+<img src="{% static "post/cloud.jpeg" %}" alt="My image"/>
 <div class='col-sm-6 col-sm-offset-3'>
     <h1>{{ title }}</h1>
 
 <div class="pagination">
     <span class="step-links">
 
-    {% for instance in object_list %}
-    <a href='{{ instance.get_absolute_url }}'>{{ instance.title }}</a></br>
-    {{ instance.publish }}</br>
+    {% for article in Articles %}
+        <a href='{{ article.get_absolute_url }}'>{{ article.title }}</a></br>
+        {{ article.publish }}</br>
 
-    {{ instance.body }}</br>
-    <light>======================================</light></br>
+        {{ article.body }}</br>
+        <light>======================================</light></br>
     {% endfor %}
-        {% if object_list.has_previous %}
-            <a href="?page={{ object_list.previous_page_number }}">previous</a>
-        {% endif %}
+    {% if Articles.has_previous %}
+        <a href="?page={{ Articles.previous_page_number }}">previous</a>
+    {% endif %}
 
         <span class="current">
-            Page {{ object_list.number }} of {{ object_list.paginator.num_pages }}.
+            Page {{ Articles.number }} of {{ Articles.paginator.num_pages }}.
         </span>
 
-        {% if object_list.has_next %}
-            <a href="?page={{ object_list.next_page_number }}">next</a>
+        {% if Articles.has_next %}
+            <a href="?page={{ Articles.next_page_number }}">next</a>
         {% endif %}
     </span>
 </div>
 
 </div>
+{{ test_dict.one }}
 {% endblock content %}
 
 

@@ -3,31 +3,37 @@ from django.shortcuts import render,get_object_or_404,redirect
 from django.template import loader,Context
 from django.http import HttpResponse,HttpResponseRedirect,Http404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from post.models import Article,Department,Tag
 
 from .form import ArticleForm
-from .models import Article,Tag
+from .models import Article,Tag,Department
 # Create your views here.
+
 def post_list(request):
-    queryset_list = Article.objects.all().filter(draft=0)
-    if request.user.is_staff or request.user.is_superuser:
-        queryset_list = Article.objects.all()
-    paginator = Paginator(queryset_list, 2) # Show 25 queryset per page
-    page = request.GET.get('page')
-    try:
-        queryset = paginator.page(page)
-    except PageNotAnInteger:
-        queryset = paginator.page(1)
-    except EmptyPage:
-        queryset = paginator.page(paginator.num_pages)
+    department_articles = []
+    for obj in Department.objects.all():
+        elem = [obj,]
+        if request.user.is_staff or request.user.is_superuser:
+            queryset_list_all = Article.objects.all().filter(department=obj)
+        else:
+            queryset_list_all = Article.objects.all().filter(draft=0, department=obj)
+        paginator = Paginator(queryset_list_all, 4) # Show 25 queryset per page
+        page = 1
+        try:
+            department_article_set = paginator.page(page)
+        except:
+            pass
+        elem.append(department_article_set)
+
+        department_articles.append(elem)
     context = {
         "title" : "All Post",
-        "object_list" : queryset,
+        "department_articles" : department_articles,
         }
     return render(request,"base.html",context)
 
-def post_list_department(request, department_slug = None):
-    department_obj = get_object_or_404(Department, department_slug = department_slug)
+
+def post_list_department(request, department_name = None):
+    department_obj = get_object_or_404(Department, department_name = department_name)
     queryset_list = Article.objects.all().filter(draft=0, department = department_obj)
     if request.user.is_staff or request.user.is_superuser:
         queryset_list = Article.objects.all().filter(department = department_obj)
@@ -41,19 +47,36 @@ def post_list_department(request, department_slug = None):
         queryset = paginator.page(paginator.num_pages)
     context = {
         "title" : department_obj.department_name,
-        "object_list" : queryset,
+        "Articles" : queryset,
         }   
     return render(request, "post_department_list.html", context)
 
 def post_detail(request, id=None):
     instance = get_object_or_404(Article,id=id)
-    #pre_instance = get_object_or_404(Article,id=id-1)
-    #lat_instance = get_object_or_404(Article,id=id+1)
+    if not request.user.is_staff or not request.user.is_superuser:
+        if not instance.draft:
+            return HttpResponseRedirect("/")
+
+    department_list = {}
+    department_slug_list = {}
+    for obj in Department.objects.all():
+        department_slug_list[obj.department_slug] = obj.department_name 
+        if request.user.is_staff or request.user.is_superuser:
+            queryset_list = Article.objects.all().filter(department=obj)
+        else:
+            queryset_list_all = Article.objects.all().filter(draft=0, department=obj)
+        paginator = Paginator(queryset_list, 4) # Show 25 department_list per page
+        page = 1
+        try:
+            department_article_set = paginator.page(page)
+        except:
+            pass
+        department_list[obj.department_slug] = department_article_set
 
     context = {
         "obj" : instance,
-        #"pre_obj" : pre_instance,
-        #"lat_obj" : lat_instance,
+        "department_list" : department_list,
+        "department_slug_list" : department_slug_list,
         }
     return render(request,"post_detail.html",context)
 
@@ -76,7 +99,7 @@ def post_create(request):
 
 def post_update(request,id=None):
     if not request.user.is_staff or not request.user.is_superuser:
-        raise Http40
+        raise Http404
     instance = get_object_or_404(Article, id=id)
     form = ArticleForm(request.POST or None, request.FILES or None, instance=instance)
     if form.is_valid():
